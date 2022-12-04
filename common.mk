@@ -29,12 +29,7 @@ PRODUCT_COPY_FILES += \
 
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
-    $(LOCAL_PATH)/overlay \
-    $(LOCAL_PATH)/overlay-lineage
-
-PRODUCT_ENFORCE_RRO_TARGETS := *
-PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += \
-    $(LOCAL_PATH)/overlay-lineage/lineage-sdk
+    $(LOCAL_PATH)/overlay
 
 # A/B
 AB_OTA_UPDATER := true
@@ -66,8 +61,6 @@ endif
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
     frameworks/native/data/etc/android.hardware.audio.pro.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.pro.xml \
-    frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
-    frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
@@ -102,9 +95,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/android.software.vulkan.deqp.level-2020-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/component-overrides.xml:$(TARGET_COPY_OUT_VENDOR)/etc/sysconfig/component-overrides.xml
 
 # Audio
 PRODUCT_PACKAGES += \
@@ -347,7 +337,7 @@ PRODUCT_PACKAGES += \
     libchrome.vendor
 
 # MotoActions
-PRODUCT_PACKAGES += \
+# PRODUCT_PACKAGES += \
     MotoActions
 
 # Net
@@ -384,6 +374,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.perf@2.2.vendor
 
+# Platform
+MSMSTEPPE := sm6150
+TARGET_BOARD_PLATFORM := $(MSMSTEPPE)
+PRODUCT_USES_QCOM_HARDWARE := true
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/perf/commonresourceconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/commonresourceconfigs.xml \
     $(LOCAL_PATH)/configs/perf/commonsysnodesconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/commonsysnodesconfigs.xml \
@@ -394,9 +389,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/perf/targetconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetconfig.xml \
     $(LOCAL_PATH)/configs/perf/targetresourceconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetresourceconfigs.xml
 
-# Power
-PRODUCT_PACKAGES += \
-    android.hardware.power-service-qti
+# QTI Common Components
+TARGET_COMMON_QTI_COMPONENTS := \
+   vibrator \
+   bt
 
 # QCOM
 PRODUCT_COPY_FILES += \
@@ -444,10 +440,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libstdc++.vendor
 
-# Vibrator
-PRODUCT_PACKAGES += \
-    vendor.qti.hardware.vibrator.service
-
 # Seccomp policy
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/seccomp/mediacodec-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediacodec.policy
@@ -464,7 +456,10 @@ PRODUCT_PACKAGES += \
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
-	$(LOCAL_PATH)
+	$(LOCAL_PATH) \
+    hardware/qcom/display \
+    hardware/qcom/media \
+    vendor/qcom/opensource/audio-hal/primary-hal
 
 # Telephony
 PRODUCT_PACKAGES += \
@@ -484,10 +479,6 @@ ifeq ($(TARGET_USE_QTI_THERMAL_SERVICE),true)
 PRODUCT_PACKAGES += \
     android.hardware.thermal@2.0-service.qti
 endif
-
-# Trust HAL
-PRODUCT_PACKAGES += \
-    vendor.lineage.trust@1.0-service
 
 # Update engine
 PRODUCT_PACKAGES += \
